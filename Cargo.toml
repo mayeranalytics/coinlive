@@ -1,0 +1,28 @@
+[package]
+name = "coinlive"
+version = "0.1.1"
+authors = ["Markus Mayer <mmayer@mayeranalytics.com>"]
+readme = "README.md"
+license = "GPL-3.0-or-later"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+url = "2"
+futures = "0.3.*"
+tokio = {version = "1", features=["full"]}
+tokio-stream = "0.1"
+async-stream = "0.3"
+tungstenite = {version="0.13"}
+tokio-tungstenite  = {version="0.14.*", features=["rustls-tls"]}
+tokio-stdin-stdout = "0.1"
+futures-util = "~0.3"
+http_req  = {version="0.7", default-features = false, features = ["rust-tls"]}
+tui = "0.15"
+termion = "1.5"
+simdjson-rust = {git = "https://github.com/SunDoge/simdjson-rust"}
+chrono = "0.4"
+dec = "0.4.4"
+inlinable_string = "0.1"
+clap = "2"

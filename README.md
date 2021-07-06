@@ -47,7 +47,7 @@ Prices list and prices table can also show the 24h percentage change. Press `%` 
 
 ### Historical Price Chart
 
-The historical price chart is shown when pressing `g` or a number `0`...`9`. `g` and `0` show the last 1000 one-minute closing prices.
+The historical price chart is shown when pressing `g` or a number `0`...`9`. `g` and `0` show the last 1000 one-minute highs and lows.
 
 <img src="assets/graph.png" alt="graph" style="zoom:37%;" />
 

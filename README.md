@@ -10,6 +10,8 @@ The data is provided by the [Binance](binance.com) [Spot API](https://binance-do
 2. Clone the `coinlive` repository and `cd coinlive`
 3. Issue `RUSTFLAGS='-C target-cpu=native -C opt-level=3' cargo build --release` or just `make release`. The generated executable is `target/release/coinlive`.
 
+If you get errors about `Decimal32` and `Decimal64` you probably have to update the Rust compile (`rustup update`). 
+
 ## Usage
 
 ### Prices List

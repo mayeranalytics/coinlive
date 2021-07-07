@@ -25,7 +25,7 @@ futures-util = "~0.3"
 http_req  = {version="0.7", default-features = false, features = ["rust-tls"]}
 tui = "0.15"
 termion = "1.5"
-simdjson-rust = {git = "https://github.com/SunDoge/simdjson-rust"}
+simdjson-rust = {git = "https://github.com/SunDoge/simdjson-rust", version = "0.2.0-alpha"}
 chrono = "0.4"
 dec = "0.4.4"
 inlinable_string = "0.1"

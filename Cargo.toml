@@ -1,12 +1,16 @@
 [package]
 name = "coinlive"
+description = "Interactive command line tool that displays live cryptocurrency prices and simple historical price charts."
 version = "0.1.1"
 authors = ["Markus Mayer <mmayer@mayeranalytics.com>"]
 readme = "README.md"
+homepage = "https://github.com/mayeranalytics/coinlive"
+repository = "https://github.com/mayeranalytics/coinlive"
+documentation = "https://github.com/mayeranalytics/coinlive"
+keywords = ["cryptocurrency", "crypto", "charts"]
+categories = ["command-line-utilities"]
 license = "GPL-3.0-or-later"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 url = "2"

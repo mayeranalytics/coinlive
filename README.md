@@ -1,6 +1,6 @@
 # coinlive
 
-Coinlive is a command line tool that displays live cryptocurrency prices. It can also display simple historical price charts.
+Coinlive is an interactive command line tool that displays live cryptocurrency prices. It can also display simple historical price charts.
 
 The data is provided by the [Binance](binance.com) [Spot API](https://binance-docs.github.io/apidocs/spot/en/). The CLI is written in [Rust](https://www.rust-lang.org/) and relies heavily on the superb [tui](https://docs.rs/tui) library.
 
@@ -80,6 +80,24 @@ By default the most liquid currency pair (usually BTCUSDT) is shown. To select a
 ### Help
 
 Press `h` to see the help page.
+
+## Command Summary
+
+| Key       | Comamnd                                         | Remarks                                 |
+| --------- | ----------------------------------------------- | --------------------------------------- |
+| h         | Display **h**elp                                |                                         |
+| l         | Show prices **I**ist                            |                                         |
+| t         | Show prices **t**able                           |                                         |
+| g         | Show **g**raph of current symbol and time-scale | Default symbol BTCUSDT, time-scale 1min |
+| 0..9      | Show graph at time-scale 1min...1day            |                                         |
+| s         | **S**elect symbol                               |                                         |
+| %         | Toggle percent/price display                    | For list and table and views only       |
+| x         | Toggle e**x**tended/reduced view                | For table view only                     |
+| a         | Show **a**bout page                             |                                         |
+| Esc       | Go back to previous view                        |                                         |
+| q, Ctrl-c | Quit                                            |                                         |
+
+
 
 ## Todo
 - Use `Decimal64` in Graph page instead of `f64`

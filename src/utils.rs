@@ -1,4 +1,6 @@
-//! Various utility functionsf or getting and further processing of symbols and klines obtained from Binance
+//! Various utility functions for getting and further processing of symbols, tickers, 
+//! websocket updates and klines obtained from Binance
+#![allow(dead_code)]
 
 use http_req::request;
 use serde::{Deserialize};
@@ -41,9 +43,6 @@ pub fn fmt_dec(d: Decimal64) -> String {
         }
     }
 }
-
-/// A float or Decimal precision
-pub type Precision = u32; // ! Do we still need this?
 
 /// String type for symbol
 pub type Symbol = InlineString;

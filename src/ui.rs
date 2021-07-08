@@ -1,4 +1,5 @@
 //! The UI is made of different pages
+#![allow(dead_code)]
 
 /// The help page
 pub mod help;
@@ -16,27 +17,19 @@ pub mod search;
 pub mod nice;
 
 use crate::utils::*;
-use std::io;
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::io::{Read, Write};
-use termion::raw::IntoRawMode;
-use tui::{Terminal};
 use tui::{
-    style::{Style, Color, Modifier},
-    backend::TermionBackend,
-    widgets::{Widget, Block, Borders, Paragraph, ListItem, List, BorderType},
-    layout::{Layout, Constraint, Direction, Alignment, Rect},
-    text::{Span, Spans, Text},
-    buffer::{Buffer, Cell}
+    style::{Style, Color},
+    widgets::{Paragraph},
+    layout::{Layout, Constraint, Direction},
 };
-use tokio::sync::mpsc::{Receiver, Sender, channel};
-use tokio_stream::wrappers::UnboundedReceiverStream;
+use tokio::sync::mpsc::{Sender, channel};
 use std::collections::HashMap;
 use chrono::Local;
 use std::marker::Copy;
 use dec::Decimal64;
-use inlinable_string::{InlineString, StringExt};
+use inlinable_string::{InlineString};
 
 /// Stores the relevant market data with some extra rendering information
 pub struct MarketState {
@@ -44,13 +37,12 @@ pub struct MarketState {
     ts: u64,
     last_px: Decimal64,
     px_24h: Decimal64,
-    precision: Precision    // ! do we need this?
 }
 
 impl MarketState {
     /// Create new `MarketState` with NANs.
-    fn new(info: &Info) -> Self {
-        MarketState { px: Decimal64::NAN, ts: 0, last_px: Decimal64::NAN, px_24h:Decimal64::NAN, precision: 8 }
+    fn new() -> Self {
+        MarketState { px: Decimal64::NAN, ts: 0, last_px: Decimal64::NAN, px_24h:Decimal64::NAN }
     }
     /// Update `MarketState` with data from `Update`
     fn update(self: &mut Self, update: &Update) {
@@ -59,7 +51,7 @@ impl MarketState {
         self.px_24h = update.px_24h;
         self.ts = update.ts;
     }
-    /// Make a price string that has 'precision' length
+    /// Make a nicely formatted price string
     pub fn price_string(self: &Self) -> String {
         fmt_dec(self.px)
     }
@@ -187,8 +179,8 @@ impl UIState {
             for u in updates {
                 if u.ts > self.ts_last_update { self.ts_last_update = u.ts; }
                 let info = lookup.get(&u.symbol);
-                if let Some(info) = info {
-                    self.markets.entry(u.symbol.clone()).or_insert(MarketState::new(&info)).update(&u);
+                if let Some(_) = info {
+                    self.markets.entry(u.symbol.clone()).or_insert(MarketState::new()).update(&u);
                 }
             }
         }

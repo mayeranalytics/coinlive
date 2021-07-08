@@ -1,6 +1,5 @@
 ///! Widget `Search`
 use crate::utils::*;
-use crate::ui::{UIState};
 use std::cell::{RefCell, RefMut};
 use std::rc::Rc;
 use tui::{

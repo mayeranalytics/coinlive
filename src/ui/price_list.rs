@@ -1,31 +1,14 @@
 ///! Widget `PriceList`
 use crate::utils::*;
 use crate::ui::MarketState;
-use std::io;
-use std::io::{Read, Write};
-use termion::raw::IntoRawMode;
-use tui::{Terminal};
 use tui::{
     style::{Style, Color, Modifier},
-    backend::TermionBackend,
-    widgets::{Widget, Block, Borders, Paragraph, ListItem, List, BorderType},
-    layout::{Layout, Constraint, Direction, Alignment, Rect},
-    text::{Span, Spans, Text},
-    buffer::{Buffer, Cell}
+    widgets::{Widget},
+    layout::{Rect},
+    text::{Span, Spans},
+    buffer::{Buffer}
 };
-use std::time::Duration;
-use termion::event::Key;
-use termion::input::TermRead;
-use tokio::{select, signal, sync::oneshot};
-use tokio_tungstenite::{connect_async, tungstenite::protocol::Message, WebSocketStream, MaybeTlsStream};
-use tokio::sync::mpsc::{Receiver, Sender, channel};
-use tokio::time;
-use tokio_stdin_stdout::stdin;
-use tokio_stream::wrappers::UnboundedReceiverStream;
-use futures_util::{future, pin_mut, StreamExt};
-use url::Url;
 use std::collections::HashMap;
-use chrono::{Local, format::strftime};
 
 /// Widget PriceList
 pub struct PriceList<'a> {

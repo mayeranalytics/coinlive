@@ -1,29 +1,13 @@
 ///! Widget `PriceList`
 use crate::utils::*;
 use crate::ui::MarketState;
-use std::io;
-use std::io::{Read, Write};
-use termion::raw::IntoRawMode;
-use tui::{Terminal};
 use tui::{
     style::{Style, Color, Modifier},
-    backend::TermionBackend,
-    widgets::{Widget, Block, Borders, Paragraph, ListItem, List, BorderType},
-    layout::{Layout, Constraint, Direction, Alignment, Rect},
-    text::{Span, Spans, Text},
-    buffer::{Buffer, Cell}
+    widgets::{Widget},
+    layout::Rect,
+    text::{Span, Spans},
+    buffer::{Buffer}
 };
-use std::time::Duration;
-use termion::event::Key;
-use termion::input::TermRead;
-use tokio::{select, signal, sync::oneshot};
-use tokio_tungstenite::{connect_async, tungstenite::protocol::Message, WebSocketStream, MaybeTlsStream};
-use tokio::sync::mpsc::{Receiver, Sender, channel};
-use tokio::time;
-use tokio_stdin_stdout::stdin;
-use tokio_stream::wrappers::UnboundedReceiverStream;
-use futures_util::{future, pin_mut, StreamExt};
-use url::Url;
 use std::collections::HashMap;
 
 /// Widget PriceList
@@ -69,7 +53,6 @@ impl<'a> PriceTable<'a> {
 
 impl<'a> Widget for PriceTable<'a> {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        let grey = Style::default().fg(Color::Gray);
         let col_width = if self.show_percent {6} else {8};
         let mut x: u16 = 0;
         let height = area.height as usize;
@@ -98,7 +81,7 @@ impl<'a> Widget for PriceTable<'a> {
                 // prices
                 for (y,base) in bases.iter().enumerate() {
                     let mut symbol = base.clone();
-                    symbol.push_str(quote);         // Todo: risky, improve
+                    symbol.push_str(quote).unwrap(); // this should really be ok! If not, something weird is happening
                     if let Some(mkt) = self.markets.get(&symbol) {
                         if self.show_percent {
                             let percentage = mkt.percentage_string();

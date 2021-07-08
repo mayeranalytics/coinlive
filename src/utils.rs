@@ -1,8 +1,8 @@
 //! Various utility functionsf or getting and further processing of symbols and klines obtained from Binance
 
 use http_req::request;
-use simdjson_rust::dom::element::Element;
-use simdjson_rust::dom;
+use serde::{Deserialize};
+use std::ops::Deref;
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 use dec::Decimal64;
@@ -42,27 +42,6 @@ pub fn fmt_dec(d: Decimal64) -> String {
     }
 }
 
-/// GET resource at uri and parse it with simdjson
-pub fn get_json<'a>(uri: &str, parser: &'a mut simdjson_rust::dom::Parser) -> Result<Element<'a>, Box<dyn std::error::Error>> {
-    let mut writer = Vec::new();
-    if !request::get(uri, &mut writer)?.status_code().is_success() {
-        return Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "Req failed")));
-    }
-    let s = String::from_utf8_lossy(&writer);
-    match parser.parse(&s) {
-        Ok(j) => Ok(j),
-        Err(e) => Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e))))
-    }
-}
-
-/// GET resource at uri and parse it with simdjson
-fn parse_json<'a>(s: &String, parser: &'a mut simdjson_rust::dom::Parser) -> Result<Element<'a>, Box<dyn std::error::Error>> {
-    match parser.parse(&s) {
-        Ok(j) => Ok(j),
-        Err(e) => Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e))))
-    }
-}
-
 /// A float or Decimal precision
 pub type Precision = u32; // ! Do we still need this?
 
@@ -85,25 +64,40 @@ impl Info {
     }
 }
 
-/// Get all traded binance symbols
+/// Subset of data returned by api/v3/exchangeInfo, for deserialisation only
+#[derive(Debug, Clone, Deserialize)]
+struct MarketInfo {
+    symbols: Vec<MarketInfoSymbol>
+}
+
+/// Subset of data returned by api/v3/exchangeInfo, for deserialisation only
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct MarketInfoSymbol {
+    symbol: String,
+    status: String,
+    base_asset: String,
+    quote_asset: String
+
+}
+
+/// Get all traded binance symbols (unsorted)
 fn _get_infos() -> Result<HashMap<Symbol, Info>, Box<dyn std::error::Error>> {
-    let mut parser = dom::Parser::default();
-    let mut out = HashMap::<Symbol, Info>::new();
-    let j = get_json("https://api.binance.com/api/v3/exchangeInfo", &mut parser)?;
-    let symbols = j.at_key("symbols")?;
-    let arr = symbols.get_array()?;
-    for item in arr.into_iter() {
-        let symbol = item.at_key("symbol")?.get_string()?;
-        let symbol = InlineString::from(&*symbol);
-        let status = item.at_key("status")?.get_string()?;
-        if status == "TRADING" {
-            let base = item.at_key("baseAsset")?.get_string()?;
-            let base = InlineString::from(&*base);
-            let quote = item.at_key("quoteAsset")?.get_string()?;
-            let quote = InlineString::from(&*quote);
-            out.insert(symbol.clone(),  Info { symbol: symbol, base: base, quote: quote, volume: Decimal64::NAN});
-        }
+    let mut writer = Vec::with_capacity(3000000);   // exchangeInfo size is <2MB usually
+    if !request::get("https://api.binance.com/api/v3/exchangeInfo", &mut writer)?.status_code().is_success() {
+        return Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "Req api/v3/exchangeInfo failed")));
     }
+    let cow = String::from_utf8_lossy(&writer);
+    let market_info: MarketInfo = serde_json::from_str(cow.deref())?;
+    let mut out = HashMap::<Symbol, Info>::new();
+    for sym in market_info.symbols.iter() {
+        if sym.status == "TRADING" {
+            let symbol = InlineString::from(sym.symbol.as_str());
+            let base = InlineString::from(sym.base_asset.as_str());
+            let quote = InlineString::from(sym.quote_asset.as_str());
+            out.insert(symbol.clone(),  Info { symbol: symbol, base: base, quote: quote, volume: Decimal64::NAN});
+        }    
+    } 
     Ok(out)
 }
 
@@ -115,18 +109,30 @@ pub struct Market {
     pub price_change: Decimal64,
 }
 
+/// Subset of data returned by api/v3/ticker/24hr, for deserialisation only
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct Ticker {
+    symbol: String,
+    price_change: String,
+    quote_volume: String,
+    last_price: String
+}
+
 /// Get all traded binance symbols
 pub fn get_markets<'a>() -> Result<HashMap<Symbol, Market>, Box<dyn std::error::Error>> {
-    let mut parser = dom::Parser::default();
+    let mut writer = Vec::with_capacity(1500000);   // 24hr size is <1MB usually
+    if !request::get("https://api.binance.com/api/v3/ticker/24hr", &mut writer)?.status_code().is_success() {
+        return Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "Req api/v3/ticker/24hr failed")));
+    }
+    let cow = String::from_utf8_lossy(&writer);
+    let tickers: Vec<Ticker> = serde_json::from_str(cow.deref())?;
     let mut out = HashMap::<Symbol, Market>::new();
-    let j = get_json("https://api.binance.com/api/v3/ticker/24hr", &mut parser)?;
-    let arr = j.get_array()?;
-    for item in arr.into_iter() {
-        let symbol = item.at_key("symbol")?.get_string()?;
-        let symbol = InlineString::from(&*symbol);
-        let price_change: Decimal64 = item.at_key("priceChange")?.get_string()?.parse()?;
-        let vol: Decimal64 = item.at_key("quoteVolume")?.get_string()?.parse()?;
-        let px: Decimal64 = parse_dec(&item.at_key("lastPrice")?.get_string()?);
+    for ticker in tickers.iter() {
+        let symbol = InlineString::from(ticker.symbol.as_str());
+        let price_change: Decimal64 = ticker.price_change.parse()?;
+        let vol: Decimal64 = ticker.quote_volume.parse()?;
+        let px: Decimal64 = ticker.last_price.parse()?;
         if vol.is_positive() {
             let mkt = Market { price: px, volume: vol, price_change: price_change };
             out.insert(symbol, mkt);
@@ -272,29 +278,37 @@ impl Interval {
     }
 }
 
+/// Binance encodes a bar as a vector of various things, here are their types
+type BinanceBar = (
+    i64, String, String, String, String, String,
+    i64, String, i64, String, String, String
+);
+
 /// helper function for [`get_klines`]
-fn parse_bar(e: simdjson_rust::dom::element::Element) -> Result<Bar, Box<dyn std::error::Error>> {
-    let arr = e.get_array()?;
-    let t: i64 = arr.at_index(0)?.get_i64()?;
-    let o: f32 = arr.at_index(1)?.get_string()?.parse()?;
-    let h: f32 = arr.at_index(2)?.get_string()?.parse()?;
-    let l: f32 = arr.at_index(3)?.get_string()?.parse()?;
-    let c: f32 = arr.at_index(4)?.get_string()?.parse()?;
-    let v: f32 = arr.at_index(5)?.get_string()?.parse()?;
+fn parse_bar(bbar: &BinanceBar) -> Result<Bar, Box<dyn std::error::Error>> {
+    let t: i64 = bbar.0;
+    let o: f32 = bbar.1.parse()?;
+    let h: f32 = bbar.2.parse()?;
+    let l: f32 = bbar.3.parse()?;
+    let c: f32 = bbar.4.parse()?;
+    let v: f32 = bbar.5.parse()?;
     Ok(Bar{t:t as u64, o:o, h:h, l:l, c:c, v:v})
 }
 
 /// Kline/candlestick bars for a symbol.
 ///  
 /// See: https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data
-pub async fn get_klines(symbol: &Symbol, interval: &Interval) -> Result<Vec<Bar>, String> {
+pub async fn get_klines(symbol: &Symbol, interval: &Interval) -> Result<Vec<Bar>, Box<dyn std::error::Error>> {
     let uri = format!("https://api.binance.com/api/v3/klines?symbol={}&interval={}&limit=1000", symbol, interval);
-    let mut parser = dom::Parser::default();
-    let j = get_json(&uri, &mut parser).map_err(|e| format!("Get klines: {:?}", e))?;
+    let mut writer = Vec::with_capacity(200000);   // klines size is <100kB usually
+    if !request::get(uri, &mut writer)?.status_code().is_success() {
+        return Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "Req api/v3/ticker/24hr failed")));
+    }
+    let cow = String::from_utf8_lossy(&writer);
+    let bars: Vec<BinanceBar> = serde_json::from_str(cow.deref())?;
     let mut out: Vec<Bar> = Vec::with_capacity(1000);
-    let arr = j.get_array().map_err(|e| format!("Parse klines: {:?}", e))?;
-    for e in arr.into_iter() {
-        let bar = parse_bar(e).map_err(|e| format!("Parse bar: {:?}", e))?;
+    for bbar in bars.iter() {
+        let bar = parse_bar(bbar)?;
         out.push(bar);
     }
     Ok(out)
@@ -309,18 +323,29 @@ pub struct Update {
     pub px_24h: Decimal64, // price 24h ago
 }
 
+/// A single update item from the markets websocket stream
+#[derive(Debug, Clone, Deserialize)]
+struct BinanceUpdate {
+    #[serde(alias = "E")]
+    ts: u64,
+    #[serde(alias = "s")]
+    symbol: String,
+    #[serde(alias = "x")]
+    px_24h: String,
+    #[serde(alias = "c")]
+    px: String
+}
+
 /// Parse a ws stream message containing updates ()
 ///
 /// See: https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream
 pub fn parse_updates<'a>(s: &String, out: &'a mut Vec::<Update>) -> Result<&'a Vec<Update>, Box<dyn std::error::Error>> {
-    let mut parser = dom::Parser::default();
-    let j = parse_json(&s, &mut parser)?;
-    for item in j.get_array()?.into_iter() {
-        let ts = item.at_key("E")?.get_i64()?;
-        let symbol = item.at_key("s")?.get_string()?;
-        let symbol = InlineString::from(&*symbol);
-        let px_24h:Decimal64 = parse_dec(&item.at_key("x")?.get_string()?);
-        let px:Decimal64 = parse_dec(&item.at_key("c")?.get_string()?);
+    let updates: Vec<BinanceUpdate> = serde_json::from_str(s.as_str())?;
+    for update in updates.iter() {
+        let ts = update.ts;
+        let symbol = InlineString::from(update.symbol.as_str());
+        let px_24h:Decimal64 = parse_dec(&update.px_24h);
+        let px:Decimal64 = parse_dec(&update.px);
         out.push(Update{symbol: symbol, ts: ts as u64, px: px, px_24h: px_24h});
     }
     Ok(out)

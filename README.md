@@ -26,7 +26,7 @@ This is the default page. It can also be reached at any time by pressing `l`.
 
 #### Compact notation for small prices
 
-Some currency pairs have very small prices, e.g `SHIBUSDT` at 0.000000734. These small numbers are difficult to read (how many zeros are there?) and take a lot of screen real estate. Therefore, a compact notation was adopted. For example, 0.000000734 is shown as 6\734, meaning there are 6 zeros after the decimal point before the first non-zero digit. Here are some examples:
+Some currency pairs have very small prices, for example `SHIBUSDT` at 0.000000734. These small numbers are difficult to read (how many zeros are there?) and take a lot of screen real estate. Therefore, a compact notation was adopted. For example, 0.000000734 is shown as 6\734, meaning there are 6 zeros after the decimal point before the first non-zero digit. Here are some examples:
 
 - **2**\61226 is 0.**00**61226
 - **3**\31772 is 0.**000**31772
@@ -51,33 +51,27 @@ Prices list and prices table can also show the 24h percentage change. Press `%` 
 
 ### Historical Price Chart
 
-The historical price chart is shown when pressing `g` or a number `0`...`9`. `g` and `0` show the last 1000 one-minute closing prices.
+The historical price chart is shown when pressing `g` or a number `0`...`9`.  `0` shows the last 1000 one-minute bars `1` shows the last 1000 5-minute bars, and so on. See the table below. `g` shows the graph of the currently selected symbol and time interval. On start the default is `BTCUSDT` 1-min bars.
 
 <img src="assets/graph.png" alt="graph" style="zoom:37%;" />
 
 The time scales can be selected with the keys `0`...`9` as follows:
 
-- `0` 1m
+| Key  | Interval | Approx. time period |
+| ---- | -------- | ------------------- |
+| 0    | 1 min    | 17 hours |
+| 1    | 5 min    |3.5 days|
+| 2    | 15 min   |10 days|
+| 3    | 30 min   |3 weeks|
+| 4    | 1 h      |6 weeks|
+| 5    | 2 h      |12 weeks|
+| 6    | 4 h      |5.5 months|
+| 7    | 8 h      |11 months|
+| 8    | 12 h     |16 months|
+| 9    | 1 d      |2 years 9 months|
+| g    | currently selected |  |
 
-- `1` 5m
-
-- `2` 15m
-
-- `3` 30m
-
-- `4` 1h
-
-- `5` 2h
-
-- `6` 4h
-
-- `7` 8h
-
-- `8` 12h
-
-- `9` 1d
-
-By default the most liquid currency pair (usually BTCUSDT) is shown. To select another currency pair, press `s`. Hihlight the desired pair by moving the cursor, after pressing return the price chartfor the selected pair is shown.
+By default the most liquid currency pair (usually BTCUSDT) is shown. To select another currency pair, press `s`. Highlight the desired pair by moving the cursor, after pressing return the price chart for the selected pair is shown.
 
 ### Help
 
@@ -91,7 +85,7 @@ Press `h` to see the help page.
 | l         | Show prices **I**ist                            |                                         |
 | t         | Show prices **t**able                           |                                         |
 | g         | Show **g**raph of current symbol and time-scale | Default symbol BTCUSDT, time-scale 1min |
-| 0..9      | Show graph at time-scale 1min...1day            |                                         |
+| 0..9      | Show graph at time-scale 1min...1day            | See table above                         |
 | s         | **S**elect symbol                               |                                         |
 | %         | Toggle percent/price display                    | For list and table and views only       |
 | x         | Toggle e**x**tended/reduced view                | For table view only                     |
@@ -101,7 +95,7 @@ Press `h` to see the help page.
 
 
 
-## Todo
+## Todo/Ideas
 - Use `Decimal64` in Graph page instead of `f64`
 - Live update price chart, or at least show price update in the message bar?
 - Some currency information, such as market cap, would be nice. [Coincap](coincap.io) has an open [API](https://docs.coincap.io/).

@@ -35,13 +35,13 @@ Some currency pairs have very small prices, for example `SHIBUSDT` at 0.00000073
 
 ### Prices Table
 
-Prices are displayed in a grid. Vertically the base currency is shown, and horizontally the quote currency. For example, BTCUSDT has base currency BTC and quote currency USDT, and a price of 37000 means that 1 BTC is worth 37000 USDT. Only the active markets are shown.
+Prices are displayed in a grid. Vertically the base currency is shown, and horizontally the quote currency. For example, `BTCUSDT` has base currency `BTC` and quote currency `USDT`, and a price of 37000 means that 1 `BTC` is worth 37000 `USDT` Only the active markets are shown.
 
 ![table](assets/table-full.gif)
 
 
 
-The price table can be reached by pressing `t`. By default the quote currencies shown are `USDT`, `BTC`, `EUR`, `GBP`, `BNB`, `ETH`, this is called the extended view. There is also a reduced view that only shows  `USDT`, `BTC`, `BNB`, `ETH`. Toggle between extended and reduced view by pressing `x` ("extended").
+The price table can be reached by pressing `t`. By default the quote currencies shown are `USDT`, `BTC`, `EUR`, `GBP`, `BNB`, `ETH`, this is called the extended view. There is also a reduced view that only shows  `USDT`, `BTC`, `BNB`, `ETH`. Toggle between extended and reduced view by pressing `x` ("e**x**tended").
 
 ![table-reduced](assets/table-reduced.gif)
 
@@ -71,7 +71,13 @@ The time scales can be selected with the keys `0`...`9` as follows:
 | 9    | 1 d      |2 years 9 months|
 | g    | currently selected |  |
 
-By default the most liquid currency pair (usually BTCUSDT) is shown. To select another currency pair, press `s`. Highlight the desired pair by moving the cursor, after pressing return the price chart for the selected pair is shown.
+By default the most liquid currency pair (usually `BTCUSDT`) is shown. 
+
+Note that the chart is <u>static</u>. You have to press `g` to refresh it.
+
+#### Symbol selection
+
+To select another currency pair, press `s`. Highlight the desired pair by moving the cursor. After pressing return the price chart for the selected pair is shown.
 
 ### Help
 
@@ -79,19 +85,19 @@ Press `h` to see the help page.
 
 ## Command Summary
 
-| Key       | Comamnd                                         | Remarks                                 |
-| --------- | ----------------------------------------------- | --------------------------------------- |
-| h         | Display **h**elp                                |                                         |
-| l         | Show prices **I**ist                            |                                         |
-| t         | Show prices **t**able                           |                                         |
-| g         | Show **g**raph of current symbol and time-scale | Default symbol BTCUSDT, time-scale 1min |
-| 0..9      | Show graph at time-scale 1min...1day            | See table above                         |
-| s         | **S**elect symbol                               |                                         |
-| %         | Toggle percent/price display                    | For list and table and views only       |
-| x         | Toggle e**x**tended/reduced view                | For table view only                     |
-| a         | Show **a**bout page                             |                                         |
-| Esc       | Go back to previous view                        |                                         |
-| q, Ctrl-c | Quit                                            |                                         |
+| Key       | Command                                         | Remarks                                   |
+| --------- | ----------------------------------------------- | ----------------------------------------- |
+| h         | Display **h**elp                                |                                           |
+| l         | Show prices **I**ist                            |                                           |
+| t         | Show prices **t**able                           |                                           |
+| g         | Show **g**raph of current symbol and time-scale | Default symbol `BTCUSDT`, time-scale 1min |
+| 0..9      | Show graph at time-scale 1min...1day            | See table above                           |
+| s         | **S**elect symbol                               |                                           |
+| %         | Toggle percent/price display                    | For list and table and views only         |
+| x         | Toggle e**x**tended/reduced view                | For table view only                       |
+| a         | Show **a**bout page                             |                                           |
+| Esc       | Go back to previous view                        |                                           |
+| q, Ctrl-c | Quit                                            |                                           |
 
 
 

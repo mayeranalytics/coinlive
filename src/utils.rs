@@ -1,4 +1,4 @@
-//! Various utility functionsf or getting an further processing of symbols and klines obtained from Binance
+//! Various utility functionsf or getting and further processing of symbols and klines obtained from Binance
 
 use http_req::request;
 use simdjson_rust::dom::element::Element;
@@ -9,11 +9,12 @@ use dec::Decimal64;
 use inlinable_string::{InlineString};
 
 /// Parse a String into a `Decimal64`, chop off superfluous zeros
+// todo: Make this return Result
 pub fn parse_dec(s: &String) -> Decimal64 {
     if let Some(_) = s.find(".") {
-        s.trim_end_matches("0").parse().expect("A")
+        s.trim_end_matches("0").parse().expect("parse_dec: Couldn't parse!")
     } else {
-        s.parse().expect("A")
+        s.parse().expect("parse_dec: Couldn't parse!")
     }
 }
 
@@ -80,7 +81,7 @@ pub struct Info {
 impl Info {
     pub fn short_symbol(self: &Self) -> &InlineString {
         if self.quote == "USDT" { &self.base }
-        else { &self.symbol }
+        else                { &self.symbol }
     }
 }
 
@@ -137,7 +138,7 @@ pub fn get_markets<'a>() -> Result<HashMap<Symbol, Market>, Box<dyn std::error::
 /// Get all traded binance symbols sorted by trading volume (in USDT)
 pub async fn get_infos() -> Result<Vec<Info>, String> {
     let infos = _get_infos().map_err(|e| format!("Get infos failed: {:?}", e))?;
-    let markets = get_markets().map_err(|e| format!("Get markets: {:?}", e))?;
+    let markets = get_markets().map_err(|e| format!("Get markets failed: {:?}", e))?;
     let mut out = Vec::<Info>::new();
     for (symbol, mut info) in infos.into_iter() {
         if let Some(market) = markets.get(&symbol) {

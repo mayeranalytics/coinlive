@@ -283,15 +283,16 @@ type BinanceBar = (
     i64, String, i64, String, String, String
 );
 
-/// helper function for [`get_klines`]
+/// helper function for `get_klines`
 fn parse_bar(bbar: &BinanceBar) -> Result<Bar, Box<dyn std::error::Error>> {
-    let t: i64 = bbar.0;
-    let o: f32 = bbar.1.parse()?;
-    let h: f32 = bbar.2.parse()?;
-    let l: f32 = bbar.3.parse()?;
-    let c: f32 = bbar.4.parse()?;
-    let v: f32 = bbar.5.parse()?;
-    Ok(Bar{t:t as u64, o:o, h:h, l:l, c:c, v:v})
+    Ok(Bar{
+        t: bbar.0 as u64, 
+        o: bbar.1.parse()?, 
+        h: bbar.2.parse()?, 
+        l: bbar.3.parse()?, 
+        c: bbar.4.parse()?, 
+        v: bbar.5.parse()?
+    })
 }
 
 /// Kline/candlestick bars for a symbol.
@@ -322,7 +323,7 @@ pub struct Update {
     pub px_24h: Decimal64, // price 24h ago
 }
 
-/// A single update item from the markets websocket stream
+/// A single update item from the markets websocket stream FOR DESER PURPOSES
 #[derive(Debug, Clone, Deserialize)]
 struct BinanceUpdate {
     #[serde(alias = "E")]
@@ -335,7 +336,7 @@ struct BinanceUpdate {
     px: String
 }
 
-/// Parse a ws stream message containing updates ()
+/// Parse a ws stream message with updates (i.e. `Vec<BinanceUpdate>`)
 ///
 /// See: https://binance-docs.github.io/apidocs/spot/en/#all-market-tickers-stream
 pub fn parse_updates<'a>(s: &String, out: &'a mut Vec::<Update>) -> Result<&'a Vec<Update>, Box<dyn std::error::Error>> {

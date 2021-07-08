@@ -7,8 +7,7 @@ The data is provided by the [Binance](binance.com) [Spot API](https://binance-do
 ## Installation
 
 1. Install Rust. If you don't already have Rust installed, follow the instructions on [rustup.rs](https://rustup.rs/).
-2. Clone the `coinlive` repository and `cd coinlive`
-3. Issue `RUSTFLAGS='-C target-cpu=native -C opt-level=3' cargo build --release` or just `make release`. The generated executable is `target/release/coinlive`.
+2. Issue `cargo install coinlive`. This will install the executable in `$HOME/.cargo/bin/`.
 
 If you get errors about `Decimal32` and `Decimal64` you probably have to update the Rust compiler (`rustup update`). 
 

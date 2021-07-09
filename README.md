@@ -92,6 +92,7 @@ Press `h` to see the help page.
 | g         | Show **g**raph of current symbol and time-scale | Default symbol `BTCUSDT`, time-scale 1min |
 | 0..9      | Show graph at time-scale 1min...1day            | See table above                           |
 | s         | **S**elect symbol                               |                                           |
+| Home      | Set cursor to top left symbol                   | For select symbol page only               |
 | %         | Toggle percent/price display                    | For list and table and views only         |
 | x         | Toggle e**x**tended/reduced view                | For table view only                       |
 | a         | Show **a**bout page                             |                                           |

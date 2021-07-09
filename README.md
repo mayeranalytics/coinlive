@@ -6,10 +6,12 @@ The data is provided by the [Binance](binance.com) [Spot API](https://binance-do
 
 ## Installation
 
+Coinlive is published to [crates.io](https://crates.io/crates/coinlive), so the installation is very easy:
+
 1. Install Rust. If you don't already have Rust installed, follow the instructions on [rustup.rs](https://rustup.rs/).
 2. Issue `cargo install coinlive`. This will install the executable in `$HOME/.cargo/bin/`.
 
-If you get errors about `Decimal32` and `Decimal64` you probably have to update the Rust compiler (`rustup update`). 
+If you get errors about `Decimal32` and `Decimal64` you probably have an older Rust version (<1.51, also see [lib.rs](https://lib.rs/crates/coinlive) for the likely minimum supported rust version "MSRV"). In this case please update the Rust compiler (`rustup update`).
 
 ## Usage
 

@@ -8,7 +8,7 @@
 
 - Replace `simdjson-rust` (0.2.0 still alpha) by `serde_json`
 
-## 0.1.0
+## 0.1.1
 
 - first published version
 

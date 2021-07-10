@@ -1,5 +1,7 @@
 # coinlive
 
+[![Latest Version](https://img.shields.io/crates/v/coinlive.svg)](https://crates.io/crates/termion) | [Changelog](https://github.com/mayeranalytics/coinlive/blob/main/Changelog.md)
+
 Coinlive is an interactive command line tool that displays live cryptocurrency prices. It can also display simple historical price charts.
 
 The data is provided by the [Binance](binance.com) [Spot API](https://binance-docs.github.io/apidocs/spot/en/). The CLI is written in [Rust](https://www.rust-lang.org/) and relies heavily on the superb [tui](https://docs.rs/tui) library.

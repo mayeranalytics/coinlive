@@ -12,6 +12,15 @@ categories = ["command-line-utilities"]
 license = "GPL-3.0-or-later"
 edition = "2018"
 
+[[bin]]
+name = "coinlive"
+
+[profile.release]
+debug = 0
+lto = true
+opt-level = 3
+codegen-units = 1
+
 [dependencies]
 url = "2"
 futures = "0.3.*"

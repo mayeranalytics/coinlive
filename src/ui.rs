@@ -410,13 +410,14 @@ impl UI {
                     }
                 },
                 UIView::Empty => {
-                    // draw nothing
+                    // draw splash screen
+                    about::draw_about(f, chunks[0]);
                 }
                 UIView::Help => {
                     f.render_widget(help::help(), chunks[0]);
                 },
                 UIView::About => {
-                    f.render_widget(about::about(), chunks[0]);
+                    about::draw_about(f, chunks[0]);
                 }
             }
             UI::draw_message_bar(f, state, chunks[1]);

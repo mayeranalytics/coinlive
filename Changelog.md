@@ -1,6 +1,9 @@
 # Changelog
 
-## 0.2.1 - Unreleased
+## 0.2.2 - Unreleased
+
+
+## 0.2.1
 - Improve documentation, help text
 - No more compiler warnings
 - Nicer styling for message bar at the bottom

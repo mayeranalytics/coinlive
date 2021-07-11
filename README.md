@@ -1,6 +1,6 @@
 # coinlive
 
-[![Latest Version](https://img.shields.io/crates/v/coinlive.svg)](https://crates.io/crates/termion) | [Changelog](https://github.com/mayeranalytics/coinlive/blob/main/Changelog.md)
+[![Latest Version](https://img.shields.io/crates/v/coinlive.svg)](https://crates.io/crates/coinlive) | [Changelog](https://github.com/mayeranalytics/coinlive/blob/main/Changelog.md)
 
 Coinlive is an interactive command line tool that displays live cryptocurrency prices. It can also display simple historical price charts.
 

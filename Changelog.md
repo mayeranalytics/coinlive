@@ -2,7 +2,8 @@
 
 ## 0.2.1 - Unreleased
 - Improve documentation, help text
-- no more compiler warnings
+- No more compiler warnings
+- Nicer styling for message bar at the bottom
 
 ## 0.2.0
 

@@ -20,9 +20,12 @@ use crate::utils::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 use tui::{
-    style::{Style, Color},
+    backend::Backend,
+    style::{Style, Color, Modifier},
     widgets::{Paragraph},
-    layout::{Layout, Constraint, Direction},
+    layout::{Layout, Constraint, Direction, Rect, Alignment},
+    text::{Span, Spans},
+    terminal::Frame,
 };
 use tokio::sync::mpsc::{Sender, channel};
 use std::collections::HashMap;
@@ -284,7 +287,7 @@ impl UI {
                     Msg::TogglePercent => {
                         state.show_percent = !state.show_percent;
                         if state.show_percent { state.message = String::from("Show %"); }
-                        else { state.message = String::from("Hide %"); }
+                        else { state.message = String::from("Show prices"); }
                     },
                     Msg::ToggleExtended => {
                         state.extended = !state.extended;
@@ -357,7 +360,7 @@ impl UI {
                 .margin(0)
                 .constraints(
                     [
-                        Constraint::Length(size.height-1),
+                        Constraint::Min(0),
                         Constraint::Length(1),
                     ].as_ref()
                 )
@@ -416,28 +419,45 @@ impl UI {
                     f.render_widget(about::about(), chunks[0]);
                 }
             }
-            let message = Paragraph::new(UI::mk_message_bar(&state, size.width));
-            f.render_widget(message, chunks[1]);
+            UI::draw_message_bar(f, state, chunks[1]);
         }).expect("Failed to draw!");
     }
-    /// Make the message bar at the bottom
-    fn mk_message_bar(state: &UIState, width: u16) -> String {
-        let width = width as usize;
+    /// Draw the message bar at the bottom
+    fn draw_message_bar<B: Backend>(f: &mut Frame<B>, state: &UIState, area: Rect) {
+        // layout horizontally into three pieces:
+        // - current time
+        // - state.message
+        // - latency (floating right)
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints(
+                [ Constraint::Length(13)    // 13 chars in "| HH:MM:SS | "
+                , Constraint::Min(0)
+                , Constraint::Length(9)     // enough for 99999ms
+                ].as_ref()
+            )
+            .split(area);
         let now = Local::now();
-        let now_str = format!("{}", now.format("%H:%M:%S"));
-        //let lat = if state.latency == 0 {String::from("?ms")} else {format!("{}ms", state.latency)};
-        let lat = if state.ts_last_update != 0 {
-            format!("{}ms", now.timestamp_millis() as u64-state.ts_last_update)
+        let now_span = Spans::from(vec![
+            Span::from("| "),
+            Span::styled(format!("{}", now.format("%H:%M:%S")), Style::default().add_modifier(Modifier::ITALIC)),
+            Span::from(" | ")
+        ]);
+        let msg_span = Span::from(state.message.as_str());
+        let lat_span = if state.ts_last_update != 0 {
+            let delta = now.timestamp_millis() as u64-state.ts_last_update;
+            let s = format!("{}ms", delta);
+            let style = Style::default().fg(
+                if      delta < 5000  { Color::Green  }
+                else if delta < 15000 { Color::Yellow }
+                else                  { Color::Red    }
+            );
+            Span::styled(s, style)
         } else {
-            String::from("?ms")
+            Span::styled("- ms", Style::default().fg(Color::Gray))
         };
-        let l = now_str.len()+state.message.len()+lat.len()+2;
-        if width > l {
-            format!("{} {} {:>width$}", now_str, state.message, lat, width=width-l)
-        } else {
-            let mut s = format!("{} {}", now_str, state.message);
-            s.truncate(width);
-            s
-        }
+        f.render_widget(Paragraph::new(now_span), chunks[0]);
+        f.render_widget(Paragraph::new(msg_span), chunks[1]);
+        f.render_widget(Paragraph::new(lat_span).alignment(Alignment::Right), chunks[2]);
     }
 }

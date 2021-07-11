@@ -4,6 +4,7 @@
 - Improve documentation, help text
 - No more compiler warnings
 - Nicer styling for message bar at the bottom
+- Draw about text on startup
 
 ## 0.2.0
 

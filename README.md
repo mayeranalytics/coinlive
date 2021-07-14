@@ -110,3 +110,7 @@ Press `h` to see the help page.
 - Live update price chart, or at least show price update in the message bar?
 - Some currency information, such as market cap, would be nice. [Coincap](coincap.io) has an open [API](https://docs.coincap.io/).
 
+## Disclaimers
+
+There is no connection to [coinlive.io]().
+

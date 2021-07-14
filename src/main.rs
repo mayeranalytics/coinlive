@@ -139,7 +139,7 @@ async fn get_symbols_async(tx: Sender<Msg>) -> Result<(), String> {
 async fn main() -> Result<(),Box<dyn std::error::Error>> {
 
     let matches = App::new("coinlive")
-        .about("Live cryptocurrency prices in the CLI")
+        .about("Live cryptocurrency prices CLI")
         .version(VERSION)
         .author("Mayer Analytics. https://github.com/mayeranalytics/coinlive")
         .arg(Arg::with_name("version")

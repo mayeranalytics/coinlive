@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.2.2 - Unreleased
+- add tests
 
 
 ## 0.2.1

@@ -170,3 +170,11 @@ async fn main() -> Result<(),Box<dyn std::error::Error>> {
     future::select(ws_task, future::select(ui.handle, listen_keys_handle)).await;
     Ok(())
 }
+
+
+#[tokio::test]
+async fn test_get_infos() -> Result<(), Box<dyn std::error::Error>> {
+    let infos = get_infos().await?;
+    assert!(infos.len()>0);
+    Ok(())
+}

@@ -164,6 +164,13 @@ pub async fn get_infos() -> Result<Vec<Info>, String> {
     Ok(out)
 }
 
+#[tokio::test]
+async fn test_get_infos() -> Result<(), Box<dyn std::error::Error>> {
+    let infos = get_infos().await?;
+    assert!(infos.len()>0);
+    Ok(())
+}
+
 /// Sort [`Vec`] of [`Info`] by trading volume descending
 pub fn sort_infos(mut infos: Vec<Info>) -> Vec<Info> {
     infos.sort_by(|a, b| b.volume.partial_cmp(&a.volume).unwrap_or(std::cmp::Ordering::Equal));

@@ -2,6 +2,7 @@
 
 ## 0.2.2 - Unreleased
 - add tests
+- use unbounded channel
 
 
 ## 0.2.1

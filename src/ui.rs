@@ -27,7 +27,7 @@ use tui::{
     text::{Span, Spans},
     terminal::Frame,
 };
-use tokio::sync::mpsc::{Sender, channel};
+use tokio::sync::mpsc::{UnboundedSender, unbounded_channel};
 use std::collections::HashMap;
 use chrono::Local;
 use std::marker::Copy;
@@ -191,7 +191,7 @@ impl UIState {
 }
 /// Encapsulates the `UI`
 pub struct UI {
-    pub tx: Sender<Msg>,
+    pub tx: UnboundedSender<Msg>,
     pub handle: tokio::task::JoinHandle<()>,
 }
 
@@ -199,7 +199,7 @@ impl UI {
     /// Create new `UI`
     pub fn new(mut terminal: Term) -> Self {
         terminal.clear().expect("Terminal failed!");
-        let (tx, mut rx) = channel(64);
+        let (tx, mut rx) = unbounded_channel();
         let handle = tokio::spawn( async move {
             let mut state = UIState::new();
             let mut buf: Vec<Update> = Vec::with_capacity(2000);    // buffer for parse_updates

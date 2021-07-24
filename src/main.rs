@@ -1,17 +1,23 @@
 mod utils;
-use crate::utils::*;
 mod ui;
 mod version;
-use crate::version::VERSION;
-use crate::ui::*;
-use std::io;
-use termion::raw::IntoRawMode;
+use crate::{
+    utils::*,
+    version::VERSION,
+    ui::*
+};
+use std::{
+    io,
+    time::Duration
+};
+use termion::{
+    event::Key,
+    input::TermRead,
+    raw::IntoRawMode
+};
 use tui::{Terminal, backend::TermionBackend};
-use std::time::Duration;
-use termion::event::Key;
-use termion::input::TermRead;
 use tokio_tungstenite::{connect_async};
-use tokio::sync::mpsc::{Sender};
+use tokio::sync::mpsc::UnboundedSender;
 use futures_util::{future, StreamExt};
 use url::Url;
 use clap::{Arg, App};
@@ -26,46 +32,46 @@ const URI_WS_TICKER: &str = "wss://stream.binance.com:9443/ws/!ticker@arr";
 /// 
 /// This is simply an endless loop that reads the terminal input in `LOOP_SPEED` intervals and sends
 /// the appropriate message to `tx`.
-async fn listen_keys(tx: Sender<Msg>) -> Result<(), String> {
+async fn listen_keys(tx: UnboundedSender<Msg>) -> Result<(), String> {
     let mut stdin = termion::async_stdin().keys();
     loop {
         if let Some(Ok(key)) = stdin.next() {
             match key {
                 Key::Char('q') => {
-                    tx.send(Msg::Stop).await.expect("UI failed");
+                    tx.send(Msg::Stop).expect("UI failed");
                     break;
                 },
                 Key::Ctrl('c') => {
-                    tx.send(Msg::Stop).await.expect("UI failed");
+                    tx.send(Msg::Stop).expect("UI failed");
                     break;
                 },
-                Key::Char('l')  => { tx.send(Msg::PriceList).await.expect("UI failed"); },
-                Key::Char('t')  => { tx.send(Msg::PriceTable).await.expect("UI failed"); },
-                Key::Char('%')  => { tx.send(Msg::TogglePercent).await.expect("UI failed"); },
-                Key::Char('x')  => { tx.send(Msg::ToggleExtended).await.expect("UI failed"); },
-                Key::Char('s')  => { tx.send(Msg::Search).await.expect("UI failed"); },
-                Key::Char('h')  => { tx.send(Msg::Help).await.expect("UI failed"); },
-                Key::Char('a')  => { tx.send(Msg::About).await.expect("UI failed"); },
-                Key::Char('g')  => { tx.send(Msg::Graph(None)).await.expect("UI failed"); },
-                Key::Char('0')  => { tx.send(Msg::Graph(Some(0))).await.expect("UI failed"); },
-                Key::Char('1')  => { tx.send(Msg::Graph(Some(1))).await.expect("UI failed"); },
-                Key::Char('2')  => { tx.send(Msg::Graph(Some(2))).await.expect("UI failed"); },
-                Key::Char('3')  => { tx.send(Msg::Graph(Some(3))).await.expect("UI failed"); },
-                Key::Char('4')  => { tx.send(Msg::Graph(Some(4))).await.expect("UI failed"); },
-                Key::Char('5')  => { tx.send(Msg::Graph(Some(5))).await.expect("UI failed"); },
-                Key::Char('6')  => { tx.send(Msg::Graph(Some(6))).await.expect("UI failed"); },
-                Key::Char('7')  => { tx.send(Msg::Graph(Some(7))).await.expect("UI failed"); },
-                Key::Char('8')  => { tx.send(Msg::Graph(Some(8))).await.expect("UI failed"); },
-                Key::Char('9')  => { tx.send(Msg::Graph(Some(9))).await.expect("UI failed"); },
-                Key::Up         => { tx.send(Msg::ArrowUp).await.expect("UI failed"); },
-                Key::Down       => { tx.send(Msg::ArrowDown).await.expect("UI failed"); },
-                Key::Left       => { tx.send(Msg::ArrowLeft).await.expect("UI failed"); },
-                Key::Right      => { tx.send(Msg::ArrowRight).await.expect("UI failed"); },
-                Key::Home       => { tx.send(Msg::Home).await.expect("UI failed"); },
-                Key::Char('\n') => { tx.send(Msg::Enter).await.expect("UI failed"); },
-                Key::Esc        => { tx.send(Msg::Esc).await.expect("UI failed"); },
+                Key::Char('l')  => { tx.send(Msg::PriceList).expect("UI failed"); },
+                Key::Char('t')  => { tx.send(Msg::PriceTable).expect("UI failed"); },
+                Key::Char('%')  => { tx.send(Msg::TogglePercent).expect("UI failed"); },
+                Key::Char('x')  => { tx.send(Msg::ToggleExtended).expect("UI failed"); },
+                Key::Char('s')  => { tx.send(Msg::Search).expect("UI failed"); },
+                Key::Char('h')  => { tx.send(Msg::Help).expect("UI failed"); },
+                Key::Char('a')  => { tx.send(Msg::About).expect("UI failed"); },
+                Key::Char('g')  => { tx.send(Msg::Graph(None)).expect("UI failed"); },
+                Key::Char('0')  => { tx.send(Msg::Graph(Some(0))).expect("UI failed"); },
+                Key::Char('1')  => { tx.send(Msg::Graph(Some(1))).expect("UI failed"); },
+                Key::Char('2')  => { tx.send(Msg::Graph(Some(2))).expect("UI failed"); },
+                Key::Char('3')  => { tx.send(Msg::Graph(Some(3))).expect("UI failed"); },
+                Key::Char('4')  => { tx.send(Msg::Graph(Some(4))).expect("UI failed"); },
+                Key::Char('5')  => { tx.send(Msg::Graph(Some(5))).expect("UI failed"); },
+                Key::Char('6')  => { tx.send(Msg::Graph(Some(6))).expect("UI failed"); },
+                Key::Char('7')  => { tx.send(Msg::Graph(Some(7))).expect("UI failed"); },
+                Key::Char('8')  => { tx.send(Msg::Graph(Some(8))).expect("UI failed"); },
+                Key::Char('9')  => { tx.send(Msg::Graph(Some(9))).expect("UI failed"); },
+                Key::Up         => { tx.send(Msg::ArrowUp).expect("UI failed"); },
+                Key::Down       => { tx.send(Msg::ArrowDown).expect("UI failed"); },
+                Key::Left       => { tx.send(Msg::ArrowLeft).expect("UI failed"); },
+                Key::Right      => { tx.send(Msg::ArrowRight).expect("UI failed"); },
+                Key::Home       => { tx.send(Msg::Home).expect("UI failed"); },
+                Key::Char('\n') => { tx.send(Msg::Enter).expect("UI failed"); },
+                Key::Esc        => { tx.send(Msg::Esc).expect("UI failed"); },
                 key => { 
-                    tx.send(Msg::Msg(format!("Unknown command {:?}", key))).await
+                    tx.send(Msg::Msg(format!("Unknown command {:?}", key)))
                       .map_err(|e| format!("UI failed: {:?}", e))?; 
                 }
             }
@@ -76,22 +82,22 @@ async fn listen_keys(tx: Sender<Msg>) -> Result<(), String> {
 }
 
 /// Websocket stream
-async fn ws(uri: &str, ui_tx: Sender<Msg>) -> Result<(), String> {
+async fn ws(uri: &str, ui_tx: UnboundedSender<Msg>) -> Result<(), String> {
     let uri: Url = Url::parse(uri).map_err(|e| format!("Bad url: {:?}", e))?;
     let (ws_stream, response) = match connect_async(uri).await {
         Ok((ws_stream, response)) => { (ws_stream, response) },
         Err(e) => { 
-            ui_tx.send(Msg::Msg(format!("Error connecting: {:?}", e))).await
+            ui_tx.send(Msg::Msg(format!("Error connecting: {:?}", e)))
                  .map_err(|e| format!("UI failed: {:?}", e))?;
             return Ok(());
         }
     };
-    ui_tx.send(Msg::Msg(format!("Websocket connected:\n{:?}", response))).await
+    ui_tx.send(Msg::Msg(format!("Websocket connected:\n{:?}", response)))
          .map_err(|e| format!("UI failed: {:?}", e))?;
 
     let (_, mut read) = ws_stream.split();
 
-    ui_tx.send(Msg::Msg(String::from("Starting..."))).await.expect("UI failed");
+    ui_tx.send(Msg::Msg(String::from("Starting..."))).expect("UI failed");
     loop {
         let next = read.next().await;
         let now = now_timestamp();
@@ -100,18 +106,18 @@ async fn ws(uri: &str, ui_tx: Sender<Msg>) -> Result<(), String> {
                 match msg {
                     Ok(msg)  => {
                         let msg = msg.to_string();
-                        ui_tx.send(Msg::WS(now, msg)).await
+                        ui_tx.send(Msg::WS(now, msg))
                              .map_err(|e| format!("UI failed: {:?}", e))?;
                     }, 
                     Err(e) => {
-                        ui_tx.send(Msg::Msg(format!("Error: {:?}", e))).await
+                        ui_tx.send(Msg::Msg(format!("Error: {:?}", e)))
                              .map_err(|e| format!("UI failed: {:?}", e))?;
                         return Err(format!("Websocket error: {:?}", e));
                     }
                 }
             },
             None => {
-                ui_tx.send(Msg::Msg(String::from("Stream end"))).await
+                ui_tx.send(Msg::Msg(String::from("Stream end")))
                      .map_err(|e| format!("UI failed: {:?}", e))?;
                 break;
             }
@@ -121,15 +127,15 @@ async fn ws(uri: &str, ui_tx: Sender<Msg>) -> Result<(), String> {
 }
 
 /// Essentially calls `get_infos`, sorts the `Info` vector and sends the `Msg`s.
-async fn get_symbols_async(tx: Sender<Msg>) -> Result<(), String> {
-    tx.send(Msg::Msg(String::from("Getting symbols..."))).await.map_err(|e| format!("UI failed: {:?}", e))?;
+async fn get_symbols_async(tx: UnboundedSender<Msg>) -> Result<(), String> {
+    tx.send(Msg::Msg(String::from("Getting symbols..."))).map_err(|e| format!("UI failed: {:?}", e))?;
     if let Ok(infos) = get_infos().await {
         let infos = sort_infos(infos);
-        tx.send(Msg::Msg(format!("Got {} symbols", infos.len()))).await.map_err(|e| format!("UI failed: {:?}", e))?;
-        tx.send(Msg::Infos(infos)).await.map_err(|e| format!("UI failed: {:?}", e))?;
+        tx.send(Msg::Msg(format!("Got {} symbols", infos.len()))).map_err(|e| format!("UI failed: {:?}", e))?;
+        tx.send(Msg::Infos(infos)).map_err(|e| format!("UI failed: {:?}", e))?;
     } else {
-        tx.send(Msg::Msg(String::from("Failed to get symbols"))).await.map_err(|e| format!("UI failed: {:?}", e))?;
-        tx.send(Msg::Stop).await.map_err(|e| format!("UI failed: {:?}", e))?; 
+        tx.send(Msg::Msg(String::from("Failed to get symbols"))).map_err(|e| format!("UI failed: {:?}", e))?;
+        tx.send(Msg::Stop).map_err(|e| format!("UI failed: {:?}", e))?; 
     }
     Ok(())
 }
@@ -164,7 +170,7 @@ async fn main() -> Result<(),Box<dyn std::error::Error>> {
 
     let listen_keys_handle = tokio::spawn(listen_keys(ui.tx.clone()));
 
-    ui.tx.send(Msg::Msg(String::from("Starting stream... "))).await?;
+    ui.tx.send(Msg::Msg(String::from("Starting stream... ")))?;
     let ws_task = tokio::spawn(ws(URI_WS_TICKER, ui.tx));
 
     future::select(ws_task, future::select(ui.handle, listen_keys_handle)).await;

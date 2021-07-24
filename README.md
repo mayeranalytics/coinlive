@@ -112,5 +112,5 @@ Press `h` to see the help page.
 
 ## Disclaimers
 
-There is no connection to [coinlive.io]().
+There is no connection to [coinlive.io]() or [coinlive.com]().
 

@@ -1,0 +1,12 @@
+# https://doc.rust-lang.org/1.41.1/cargo/reference/config.html
+
+[alias]     # command aliases
+b = "build"
+c = "check"
+t = "test"
+r = "run"
+rr = "run --release"
+br = "build --release"
+
+[target.release]
+rustflags=["target-cpu=native"]

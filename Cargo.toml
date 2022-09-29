@@ -27,8 +27,8 @@ futures = "0.3.*"
 tokio = {version = "1", features=["full"]}
 tokio-stream = "0.1"
 async-stream = "0.3"
-tungstenite = {version="0.14"}
-tokio-tungstenite  = {version="0.15", features=["rustls-tls"]}
+tungstenite = {version="0.17.3"}
+tokio-tungstenite  = {version="0.17.2", features=["native-tls"]}
 tokio-stdin-stdout = "0.1"
 futures-util = "~0.3"
 http_req  = {version="0.8", default-features = false, features = ["rust-tls"]}

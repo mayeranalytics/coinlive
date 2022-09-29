@@ -32,7 +32,7 @@ tokio-tungstenite  = {version="0.15", features=["rustls-tls"]}
 tokio-stdin-stdout = "0.1"
 futures-util = "~0.3"
 http_req  = {version="0.8", default-features = false, features = ["rust-tls"]}
-tui = "0.15"
+tui = { version = "0.19", default-features = false, features = ["termion"] }
 termion = "1.5"
 chrono = "0.4"
 dec = "0.4.4"

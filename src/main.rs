@@ -20,7 +20,7 @@ use tokio_tungstenite::{connect_async};
 use tokio::sync::mpsc::UnboundedSender;
 use futures_util::{future, StreamExt};
 use url::Url;
-use clap::{Arg, App};
+use clap::{Arg, Command};
 
 /// Duration of `sleep` in `listen_keys` loop
 const LISTEN_KEYS_SLEEP_MILLIS: u64 = 100;
@@ -144,21 +144,11 @@ async fn get_symbols_async(tx: UnboundedSender<Msg>) -> Result<(), String> {
 #[tokio::main]
 async fn main() -> Result<(),Box<dyn std::error::Error>> {
 
-    let matches = App::new("coinlive")
+    let _matches = Command::new("coinlive")
         .about("Live cryptocurrency prices CLI")
         .version(VERSION)
         .author("Mayer Analytics. https://github.com/mayeranalytics/coinlive")
-        .arg(Arg::with_name("version")
-            .short("V")
-            .long("version")
-            .help("Print version information and exit.")
-            .takes_value(false))
         .get_matches();
-
-    if matches.is_present("version") {
-        println!("{}", VERSION);
-        return Ok(());
-    }
 
     // terminal raw mode to allow reading stdin one key at a time
     let stdout = io::stdout().into_raw_mode().unwrap();

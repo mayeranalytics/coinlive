@@ -37,6 +37,6 @@ termion = "1.5"
 chrono = "0.4"
 dec = "0.4.4"
 inlinable_string = "0.1"
-clap = "2"
+clap = "4.0.2"
 serde = {version="1.0", features = ["derive"]}
 serde_json = {version="1.0"}

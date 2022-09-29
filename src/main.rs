@@ -20,7 +20,7 @@ use tokio_tungstenite::{connect_async};
 use tokio::sync::mpsc::UnboundedSender;
 use futures_util::{future, StreamExt};
 use url::Url;
-use clap::{Arg, Command};
+use clap::{Command};
 
 /// Duration of `sleep` in `listen_keys` loop
 const LISTEN_KEYS_SLEEP_MILLIS: u64 = 100;

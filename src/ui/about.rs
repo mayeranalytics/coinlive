@@ -7,7 +7,7 @@ use tui::{
     backend::Backend,
     terminal::Frame,
 };
-use crate::version::VERSION;
+use version::version;
 
 /// The about paragraph
 fn about<'a>() -> (Paragraph<'a>, u16) {
@@ -29,7 +29,7 @@ fn about<'a>() -> (Paragraph<'a>, u16) {
         Spans::from(Vec::new()),
         Spans::from(Span::styled("https://github.com/mayeranalytics/coinlive", Style::default().fg(Color::Green))),
         Spans::from(Vec::new()),
-        Spans::from(Span::styled(format!("Version {}", VERSION), Style::default().fg(Color::Gray))),
+        Spans::from(Span::styled(format!("Version {}", version!()), Style::default().fg(Color::Gray))),
     ];
     let h = txt.len() as u16;
     let p = Paragraph::new(txt)

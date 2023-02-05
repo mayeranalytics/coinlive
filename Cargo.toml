@@ -1,7 +1,7 @@
 [package]
 name = "coinlive"
 description = "Interactive command line tool that displays live cryptocurrency prices and simple historical price charts."
-version = "0.2.2"
+version = "0.2.3"
 authors = ["Markus Mayer <mmayer@mayeranalytics.com>"]
 readme = "README.md"
 homepage = "https://github.com/mayeranalytics/coinlive"
@@ -27,16 +27,17 @@ futures = "0.3.*"
 tokio = {version = "1", features=["full"]}
 tokio-stream = "0.1"
 async-stream = "0.3"
-tungstenite = {version="0.17.3"}
-tokio-tungstenite  = {version="0.17.2", features=["native-tls"]}
+tungstenite = {version="0.18"}
+tokio-tungstenite  = {version="0.18", features=["native-tls"]}
 tokio-stdin-stdout = "0.1"
 futures-util = "~0.3"
-http_req  = {version="0.8", default-features = false, features = ["rust-tls"]}
+http_req  = {version="0.9", default-features = false, features = ["rust-tls"]}
 tui = { version = "0.19", default-features = false, features = ["termion"] }
-termion = "1.5"
+termion = "2"
 chrono = "0.4"
 dec = "0.4.4"
 inlinable_string = "0.1"
-clap = "4.0.2"
+clap = "4.1"
 serde = {version="1.0", features = ["derive"]}
 serde_json = {version="1.0"}
+version = "3.0"

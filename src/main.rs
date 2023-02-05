@@ -1,9 +1,7 @@
 mod utils;
 mod ui;
-mod version;
 use crate::{
     utils::*,
-    version::VERSION,
     ui::*
 };
 use std::{
@@ -21,6 +19,7 @@ use tokio::sync::mpsc::UnboundedSender;
 use futures_util::{future, StreamExt};
 use url::Url;
 use clap::{Command};
+use version::version;
 
 /// Duration of `sleep` in `listen_keys` loop
 const LISTEN_KEYS_SLEEP_MILLIS: u64 = 100;
@@ -146,7 +145,7 @@ async fn main() -> Result<(),Box<dyn std::error::Error>> {
 
     let _matches = Command::new("coinlive")
         .about("Live cryptocurrency prices CLI")
-        .version(VERSION)
+        .version(version!())
         .author("Mayer Analytics. https://github.com/mayeranalytics/coinlive")
         .get_matches();
 

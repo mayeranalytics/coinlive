@@ -22,20 +22,20 @@ opt-level = 3
 codegen-units = 1
 
 [dependencies]
-url = "2"
-futures = "0.3.*"
-tokio = {version = "1", features=["full"]}
+url = "2.3"
+futures = "0.3"
+tokio = {version = "1.25", features=["full"]}
 tokio-stream = "0.1"
 async-stream = "0.3"
 tungstenite = {version="0.18"}
 tokio-tungstenite  = {version="0.18", features=["native-tls"]}
 tokio-stdin-stdout = "0.1"
-futures-util = "~0.3"
+futures-util = "0.3"
 http_req  = {version="0.9", default-features = false, features = ["rust-tls"]}
 tui = { version = "0.19", default-features = false, features = ["termion"] }
-termion = "2"
+termion = "2.0"
 chrono = "0.4"
-dec = "0.4.4"
+dec = "0.4"
 inlinable_string = "0.1"
 clap = "4.1"
 serde = {version="1.0", features = ["derive"]}

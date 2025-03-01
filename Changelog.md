@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4
+- dependency versions updated
+- config renamed to config.toml
+
+## 0.2.3
+
 ## 0.2.2 - Unreleased
 - add tests
 - use unbounded channel

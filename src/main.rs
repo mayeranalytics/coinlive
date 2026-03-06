@@ -17,7 +17,6 @@ use tui::{Terminal, backend::TermionBackend};
 use tokio_tungstenite::{connect_async};
 use tokio::sync::mpsc::UnboundedSender;
 use futures_util::{future, StreamExt};
-use url::Url;
 use clap::{Command};
 use version::version;
 
@@ -82,7 +81,6 @@ async fn listen_keys(tx: UnboundedSender<Msg>) -> Result<(), String> {
 
 /// Websocket stream
 async fn ws(uri: &str, ui_tx: UnboundedSender<Msg>) -> Result<(), String> {
-    let uri: Url = Url::parse(uri).map_err(|e| format!("Bad url: {:?}", e))?;
     let (ws_stream, response) = match connect_async(uri).await {
         Ok((ws_stream, response)) => { (ws_stream, response) },
         Err(e) => { 
